@@ -10,8 +10,7 @@ app.secret_key = config.secret_key
 
 @app.route("/")
 def index():
-    return "This is Fribbble"
-
+    return render_template("index.html") 
 @app.route("/register")
 def register():
     return render_template("register.html")
