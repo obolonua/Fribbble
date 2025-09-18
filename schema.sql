@@ -9,5 +9,6 @@ CREATE TABLE pictures (
     title TEXT,
     description TEXT,
     style TEXT,
-    user_id INTEGER REFERENCES users
+    user_id INTEGER REFERENCES users,
+    image_path TEXT
 );

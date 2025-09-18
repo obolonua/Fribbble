@@ -1,12 +1,23 @@
+import os
 import sqlite3
 from flask import Flask
 from flask import redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 import db
 import config
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
+
+# configure upload folder
+UPLOAD_FOLDER = "static/uploads"
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route("/")
 def index():
@@ -19,11 +30,26 @@ def new_picture():
 @app.route("/create_picture", methods=["POST"])
 def create_picture():
     name = request.form["name"]
-    desctiption = request.form["description"]
+    description = request.form["description"]
     style = request.form["style"]
-    user_id = session["user_id"]
-    sql = "INSERT INTO pictures (title, description, style, user_id) VALUES (?, ?, ?, ?)"
-    db.execute(sql, [name, desctiption, style, user_id])
+    user_id = session.get("user_id")
+
+    if not user_id:
+        return redirect("/login")
+
+    file = request.files.get("picture")
+    file_path = None
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        file.save(file_path)
+        # store relative path for later display
+        file_path = "/" + file_path  
+
+    sql = "INSERT INTO pictures (title, description, style, user_id, image_path) VALUES (?, ?, ?, ?, ?)"
+    db.execute(sql, [name, description, style, user_id, file_path])
+
     return redirect("/")
 
 @app.route("/register")
@@ -57,7 +83,13 @@ def login():
         password = request.form["password"]
         
         sql = "SELECT id, password_hash FROM users WHERE username = ?"
-        result = db.query(sql, [username])[0]
+        results = db.query(sql, [username])
+
+        if not results:
+            return "VIRHE: väärä tunnus tai salasana"
+        
+        result = results[0]
+        
         user_id = result["id"]
         password_hash = result["password_hash"]
 
@@ -70,6 +102,6 @@ def login():
 
 @app.route("/logout")
 def logout():
-    del session["user_id"]
-    del session["username"]
+    session.pop("user_id", None)
+    session.pop("username", None)
     return redirect("/")
