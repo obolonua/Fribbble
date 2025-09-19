@@ -1,4 +1,5 @@
 import sqlite3
+import db
 from flask import g
 
 def get_connection():
@@ -22,3 +23,7 @@ def query(sql, params=[]):
     result = con.execute(sql, params).fetchall()
     con.close()
     return result
+
+def add_picture(name, description, style, user_id, file_path):
+    sql = "INSERT INTO pictures (title, description, style, user_id, image_path) VALUES (?, ?, ?, ?, ?)"
+    db.execute(sql, [name, description, style, user_id, file_path])

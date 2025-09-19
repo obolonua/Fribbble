@@ -49,8 +49,7 @@ def create_picture():
         # store relative path for later display
         file_path = "/" + file_path  
 
-    sql = "INSERT INTO pictures (title, description, style, user_id, image_path) VALUES (?, ?, ?, ?, ?)"
-    db.execute(sql, [name, description, style, user_id, file_path])
+    db.add_picture(name, description, style, user_id, file_path)
 
     return redirect("/")
 
