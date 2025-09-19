@@ -1,31 +1,38 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>Fribbble</title>
+  </head>
 
-<head>
-  <title>Fribbble</title>
-</head>
+  <body>
+    {% if session.username %}
 
-<body>
-  {% if session.username %}
-
-  <p>
-  <a href="/new_picture">New picture</a>
-  </p>
-  <p>
-    <a href="/logout">Kirjaudu ulos</a>
-  </p>
-
-  <h2>Pictures</h2>
-
-  {% else %}
-  <p>
-    <a href="/login">Kirjaudu sisään</a>
-  </p>
     <p>
-    <a href="/register">Luo tunnus</a>
-  </p>
-  {% endif %}
-</body>
+      <a href="/new_picture">New picture</a>
+    </p>
+    <p>
+      <a href="/logout">Kirjaudu ulos</a>
+    </p>
 
-
+    <h2>Pictures</h2>
+    {% if pictures %} {% for pic in pictures %}
+    <div style="margin-bottom: 30px">
+      <h3>{{ pic.title }}</h3>
+      <p>{{ pic.description }}</p>
+      <p><i>{{ pic.style }}</i></p>
+      {% if pic.image_path %}
+      <img src="{{ pic.image_path }}" alt="{{ pic.title }}" width="300" />
+      {% endif %}
+    </div>
+    {% endfor %} {% else %}
+    <p>No pictures yet. <a href="/new_picture">Add one</a></p>
+    {% endif %} {% else %}
+    <p>
+      <a href="/login">Kirjaudu sisään</a>
+    </p>
+    <p>
+      <a href="/register">Luo tunnus</a>
+    </p>
+    {% endif %}
+  </body>
 </html>

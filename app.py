@@ -21,7 +21,9 @@ def allowed_file(filename):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    sql = "SELECT title, description, style, image_path FROM pictures ORDER BY id DESC"
+    pictures = db.query(sql)
+    return render_template("index.html", pictures=pictures)
 
 @app.route("/new_picture")
 def new_picture():
