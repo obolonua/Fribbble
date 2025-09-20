@@ -27,3 +27,7 @@ def query(sql, params=[]):
 def add_picture(name, description, style, user_id, file_path):
     sql = "INSERT INTO pictures (title, description, style, user_id, image_path) VALUES (?, ?, ?, ?, ?)"
     db.execute(sql, [name, description, style, user_id, file_path])
+
+def get_pictures():
+    sql = "SELECT title, description, style, image_path FROM pictures ORDER BY id DESC"
+    return db.query(sql)
