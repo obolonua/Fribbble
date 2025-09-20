@@ -21,10 +21,8 @@ def allowed_file(filename):
 
 @app.route("/")
 def index():
-    # sql = "SELECT title, description, style, image_path FROM pictures ORDER BY id DESC"
-    # # pictures = db.query(sql)
-    result = db.get_pictures()
-    return render_template("index.html", pictures=result)
+    pictures = db.get_pictures()
+    return render_template("index.html", pictures=pictures)
 
 @app.route("/new_picture")
 def new_picture():
@@ -53,6 +51,11 @@ def create_picture():
     db.add_picture(name, description, style, user_id, file_path)
 
     return redirect("/")
+
+@app.route("/picture/<int:picture_id>")
+def show_picture(picture_id):
+    picture = db.get_picture(picture_id)
+    return render_template("picture.html", picture=picture)
 
 @app.route("/register")
 def register():

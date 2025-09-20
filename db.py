@@ -29,5 +29,11 @@ def add_picture(name, description, style, user_id, file_path):
     db.execute(sql, [name, description, style, user_id, file_path])
 
 def get_pictures():
-    sql = "SELECT title, description, style, image_path FROM pictures ORDER BY id DESC"
+    sql = "SELECT id, title, description, style, image_path FROM pictures ORDER BY id DESC"
     return db.query(sql)
+
+def get_picture(picture_id):
+    print("geting the picture")
+    sql = "SELECT id, title, description, style, image_path FROM pictures WHERE pictures.id = ?"
+    return db.query(sql, [picture_id ])[0]
+    

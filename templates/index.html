@@ -21,7 +21,9 @@
       <p>{{ pic.description }}</p>
       <p><i>{{ pic.style }}</i></p>
       {% if pic.image_path %}
-      <img src="{{ pic.image_path }}" alt="{{ pic.title }}" width="300" />
+      <a href="/picture/{{ pic.id }}">
+        <img src="{{ pic.image_path }}" alt="{{ pic.title }}" width="300" />
+      </a>
       {% endif %}
     </div>
     {% endfor %} {% else %}

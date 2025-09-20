@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ picture.title }}</title>
+</head>
+<body>
+  <h2>{{ picture.title }}</h2>
+  <p>{{ picture.description }}</p>
+  <p><i>{{ picture.style }}</i></p>
+  {% if picture.image_path %}
+  <img src="{{ picture.image_path }}" alt="{{ picture.title }}" width="500" />
+  {% endif %}
+
+  <p><a href="/">Back to gallery</a></p>
+</body>
+</html>
