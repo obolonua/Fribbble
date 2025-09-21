@@ -86,6 +86,16 @@ def update_picture():
 
     return redirect("/picture/" + str(picture_id))
 
+@app.route("/delete_picture/<int:picture_id>", methods=["POST"])
+def delete_picture(picture_id):
+    user_id = session.get("user_id")
+
+    if not user_id:
+        return redirect("/login")
+
+    db.delete_picture(picture_id, user_id)
+    return redirect("/")
+
 @app.route("/picture/<int:picture_id>")
 def show_picture(picture_id):
     picture = db.get_picture(picture_id)

@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>{{ picture.title }}</title>
-</head>
-<body>
-  <h2>{{ picture.title }}</h2>
-  <p>{{ picture.description }}</p>
-  <p><i>{{ picture.style }}</i></p>
-  {% if picture.image_path %}
-  <img src="{{ picture.image_path }}" alt="{{ picture.title }}" width="500" />
-  {% endif %}
-  {% if session.user_id == picture.user_id%}
-  <p><a href="/edit/{{picture.id}}">Muokkaa</a></p>
-  {% endif %}
-  <p><a href="/">Back to gallery</a></p>
-</body>
+  <head>
+    <title>{{ picture.title }}</title>
+  </head>
+  <body>
+    <h2>{{ picture.title }}</h2>
+    <p>{{ picture.description }}</p>
+    <p><i>{{ picture.style }}</i></p>
+    {% if picture.image_path %}
+    <img src="{{ picture.image_path }}" alt="{{ picture.title }}" width="500" />
+    {% endif %} {% if session.user_id == picture.user_id %}
+    <p><a href="/edit/{{picture.id}}">Muokkaa</a></p>
+    <form
+      action="/delete_picture/{{ picture.id }}"
+      method="post"
+    >
+      <button type="submit">Delete Picture</button>
+    </form>
+    {% endif %}
+
+    <p><a href="/">Back to gallery</a></p>
+  </body>
 </html>

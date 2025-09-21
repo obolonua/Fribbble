@@ -51,6 +51,10 @@ def update_picture(title, description, style, user_id, file_path, picture_id):
         """
         execute(sql, [title, description, style, file_path, picture_id, user_id])
 
+def delete_picture(picture_id, user_id):
+    sql = "DELETE FROM pictures WHERE id = ? AND user_id = ?"
+    execute(sql, [picture_id, user_id])
+
 def search_pictures(query_text):
     sql = """
         SELECT id, title, description, style, image_path
