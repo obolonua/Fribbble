@@ -21,8 +21,12 @@ def allowed_file(filename):
 
 @app.route("/")
 def index():
-    pictures = db.get_pictures()
-    return render_template("index.html", pictures=pictures)
+    q = request.args.get("q")
+    if q:
+        pictures = db.search_pictures(q)
+    else:
+        pictures = db.get_pictures()
+    return render_template("index.html", pictures=pictures, search_query=q)
 
 @app.route("/new_picture")
 def new_picture():

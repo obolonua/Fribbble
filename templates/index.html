@@ -6,7 +6,15 @@
 
   <body>
     {% if session.username %}
-
+    <form method="get" action="/">
+      <input
+        type="text"
+        name="q"
+        placeholder="Search by title"
+        value="{{ search_query or '' }}"
+      />
+      <input type="submit" value="Search" />
+    </form>
     <p>
       <a href="/new_picture">New picture</a>
     </p>

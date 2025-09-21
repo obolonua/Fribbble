@@ -50,3 +50,12 @@ def update_picture(title, description, style, user_id, file_path, picture_id):
             WHERE id = ? AND user_id = ?
         """
         execute(sql, [title, description, style, file_path, picture_id, user_id])
+
+def search_pictures(query_text):
+    sql = """
+        SELECT id, title, description, style, image_path
+        FROM pictures
+        WHERE title LIKE ?
+        ORDER BY id DESC
+    """
+    return query(sql, [f"%{query_text}%"])
