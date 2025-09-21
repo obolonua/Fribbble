@@ -1,25 +1,49 @@
 # Fribbble
+🎨 Fribbble — yksinkertainen Dribbble-klooni (oppimisprojekti)
 
-🎨 Fribble — Dribbble-klooni (oppimisprojekti)
+Fribbble on Flask-sovellus, jonka avulla käyttäjät voivat jakaa kuviaan, selata muiden julkaisuja sekä hallita omia sisältöjään. Projekti on osa harjoitustyötä, ja sen avulla harjoitellaan mm. autentikointia, CRUD-toiminnallisuuksia sekä relaatiotietokannan käyttöä.
 
-Fribble on oppimisprojekti, joka on saanut inspiraationsa Dribbble
--sivustosta.
-Sovelluksen avulla käyttäjät voivat jakaa luovia julkaisujaan, selata muiden lisäämiä kohteita sekä olla vuorovaikutuksessa toistensa kanssa.
+---
 
-Projektin tavoitteena on harjoitella täyden pinon kehittämistä, kuten autentikointia, CRUD-toiminnallisuuksia, relaatiotietokantoja sekä modernien frontend- ja backend-tekniikoiden käyttöä.
+## ✨ Ominaisuudet
 
-✨ Ominaisuudet
+- 🔐 **Autentikointi** — Käyttäjä voi luoda tunnuksen ja kirjautua sisään.
+- 📤 **Sisällön hallinta** — Käyttäjä voi lisätä uusia kuvia, muokata niitä ja poistaa omiaan.
+- 👀 **Sisällön selaus** — Kaikki käyttäjien lisäämät kuvat näkyvät etusivulla.
+- 🔍 **Haku** — Käyttäjä voi hakea kuvia nimen perusteella.
 
-🔐 Autentikointi — Käyttäjä voi luoda tunnuksen ja kirjautua turvallisesti sisään.
+---
 
-📤 Sisällön hallinta — Käyttäjä voi lisätä uusia tietokohteita, muokata niitä ja poistaa omiaan.
+## 🚀 Käynnistysohjeet
 
-👀 Sisällön selaus — Käyttäjä voi selata sekä omia että muiden lisäämiä tietokohteita.
+1. **Asenna riippuvuudet**
 
-🔍 Haku ja suodatus — Käyttäjä voi etsiä tietokohteita hakusanoilla tai muilla perusteilla.
+   pip install flask 
 
-🧑 Käyttäjäsivut — Käyttäjäprofiilit näyttävät tilastoja ja käyttäjän lisäämät tietokohteet.
+2. **Luo tietokanta**
 
-🏷️ Luokat — Käyttäjä voi liittää tietokohteeseen yhden tai useamman luokittelun. Luokat tallennetaan tietokantaan.
+sqlite3 database.db < schema.sql
 
-➕ Toissijaiset kohteet — Käyttäjä voi lisätä toissijaisia tietokohteita, jotka täydentävät pääasiallista kohdetta. Näitä voi lisätä sekä omiin että muiden kohteisiin.
+3. **Luo config.py**
+
+    secret_key = "valitse-tähän-jokin-satunnainen-merkkijono"
+
+4. **Käynnistä sovellus**
+
+    flask run
+
+5. **Avaa selaimessa**
+
+    http://127.0.0.1:5000/
+
+## 🧪 Testausohjeet
+
+    Luo tunnus kohdasta Luo tunnus.
+
+    Kirjaudu sisään.
+
+    Lisää uusi kuva valitsemalla New picture.
+
+    Muokkaa tai poista kuva omalta sivultaan.
+
+    Hae kuvia etusivun hakulaatikolla.
