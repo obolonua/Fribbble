@@ -33,7 +33,20 @@ def get_pictures():
     return db.query(sql)
 
 def get_picture(picture_id):
-    print("geting the picture")
-    sql = "SELECT id, title, description, style, image_path FROM pictures WHERE pictures.id = ?"
+    sql = """SELECT pictures.id,
+                    pictures.user_id,
+                    pictures.title,
+                    pictures.description,
+                    pictures.style,
+                    pictures.image_path
+            FROM pictures 
+            WHERE pictures.id = ?"""
     return db.query(sql, [picture_id ])[0]
-    
+
+def update_picture(title, description, style, user_id, file_path, picture_id):
+        sql = """
+            UPDATE pictures
+            SET title = ?, description = ?, style = ?, image_path = ?
+            WHERE id = ? AND user_id = ?
+        """
+        execute(sql, [title, description, style, file_path, picture_id, user_id])

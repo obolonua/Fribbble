@@ -10,7 +10,9 @@
   {% if picture.image_path %}
   <img src="{{ picture.image_path }}" alt="{{ picture.title }}" width="500" />
   {% endif %}
-
+  {% if session.user_id == picture.user_id%}
+  <p><a href="/edit/{{picture.id}}">Muokkaa</a></p>
+  {% endif %}
   <p><a href="/">Back to gallery</a></p>
 </body>
 </html>

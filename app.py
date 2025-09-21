@@ -52,6 +52,36 @@ def create_picture():
 
     return redirect("/")
 
+@app.route("/edit/<int:picture_id>")
+def edit_picture(picture_id):
+    picture = db.get_picture(picture_id)
+    return render_template("edit.html", picture = picture)
+
+@app.route("/update_picture", methods=["POST"])
+def update_picture():
+    print("first")
+    name = request.form["name"]
+    description = request.form["description"]
+    style = request.form["style"]
+    user_id = session.get("user_id")
+    picture_id = request.form["picture_id"]
+
+    if not user_id:
+        return redirect("/login")
+
+    file = request.files.get("picture")
+    file_path = None
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        file.save(file_path)
+        file_path = "/" + file_path  
+
+    db.update_picture(name, description, style, user_id, file_path, picture_id)
+
+    return redirect("/picture/" + str(picture_id))
+
 @app.route("/picture/<int:picture_id>")
 def show_picture(picture_id):
     picture = db.get_picture(picture_id)
