@@ -1,7 +1,7 @@
 import os
 import sqlite3
 from flask import Flask
-from flask import redirect, render_template, request, session
+from flask import redirect, render_template, request, session, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import db
@@ -59,16 +59,22 @@ def create_picture():
 @app.route("/edit/<int:picture_id>")
 def edit_picture(picture_id):
     picture = db.get_picture(picture_id)
+    if picture["user_id"] != session["user_id"]:
+        abort(403)
     return render_template("edit.html", picture = picture)
 
 @app.route("/update_picture", methods=["POST"])
 def update_picture():
-    print("first")
     name = request.form["name"]
     description = request.form["description"]
     style = request.form["style"]
     user_id = session.get("user_id")
     picture_id = request.form["picture_id"]
+    pictures_user_id = int(request.form["user_id"])
+
+    if pictures_user_id != user_id:
+        print(type(pictures_user_id), type(user_id))
+        abort(403)
 
     if not user_id:
         return redirect("/login")
@@ -83,7 +89,7 @@ def update_picture():
         file_path = "/" + file_path  
 
     db.update_picture(name, description, style, user_id, file_path, picture_id)
-
+    print(name, description, style, user_id, file_path, picture_id)
     return redirect("/picture/" + str(picture_id))
 
 @app.route("/delete_picture/<int:picture_id>", methods=["POST"])
