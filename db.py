@@ -41,7 +41,9 @@ def get_picture(picture_id):
                     pictures.image_path
             FROM pictures 
             WHERE pictures.id = ?"""
-    return db.query(sql, [picture_id ])[0]
+    result = db.query(sql, [picture_id])    
+
+    return result[0] if result else None
 
 def update_picture(title, description, style, user_id, file_path, picture_id):
         sql = """

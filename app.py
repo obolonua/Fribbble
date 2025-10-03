@@ -59,21 +59,25 @@ def create_picture():
 @app.route("/edit/<int:picture_id>")
 def edit_picture(picture_id):
     picture = db.get_picture(picture_id)
+    if not picture:
+        abort(404)
     if picture["user_id"] != session["user_id"]:
         abort(403)
     return render_template("edit.html", picture = picture)
 
 @app.route("/update_picture", methods=["POST"])
 def update_picture():
+    picture_id = request.form["picture_id"]
+    picture = db.get_picture(picture_id)
+    if not picture:
+        abort(404)
     name = request.form["name"]
     description = request.form["description"]
     style = request.form["style"]
     user_id = session.get("user_id")
-    picture_id = request.form["picture_id"]
-    pictures_user_id = int(request.form["user_id"])
+    picture_user_id = int(request.form["user_id"])
 
-    if pictures_user_id != user_id:
-        print(type(pictures_user_id), type(user_id))
+    if picture_user_id != user_id:
         abort(403)
 
     if not user_id:
@@ -94,6 +98,9 @@ def update_picture():
 
 @app.route("/delete_picture/<int:picture_id>", methods=["POST"])
 def delete_picture(picture_id):
+    picture = db.get_picture(picture_id)
+    if not picture:
+        abort(404)
     user_id = session.get("user_id")
 
     if not user_id:
@@ -105,6 +112,8 @@ def delete_picture(picture_id):
 @app.route("/picture/<int:picture_id>")
 def show_picture(picture_id):
     picture = db.get_picture(picture_id)
+    if not picture:
+        abort(404)
     return render_template("picture.html", picture=picture)
 
 @app.route("/register")
