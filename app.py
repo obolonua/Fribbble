@@ -19,6 +19,10 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def check_login():
+    if "user_id" not in session:
+        abort(403)
+
 @app.route("/")
 def index():
     q = request.args.get("q")
@@ -30,10 +34,12 @@ def index():
 
 @app.route("/new_picture")
 def new_picture():
+    check_login()
     return render_template("new_picture.html")
 
 @app.route("/create_picture", methods=["POST"])
 def create_picture():
+    check_login()
     name = request.form["name"]
     description = request.form["description"]
     style = request.form["style"]
@@ -49,7 +55,6 @@ def create_picture():
         filename = secure_filename(file.filename)
         file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
         file.save(file_path)
-        # store relative path for later display
         file_path = "/" + file_path  
 
     db.add_picture(name, description, style, user_id, file_path)
@@ -58,6 +63,7 @@ def create_picture():
 
 @app.route("/edit/<int:picture_id>")
 def edit_picture(picture_id):
+    check_login()
     picture = db.get_picture(picture_id)
     if not picture:
         abort(404)
@@ -67,6 +73,7 @@ def edit_picture(picture_id):
 
 @app.route("/update_picture", methods=["POST"])
 def update_picture():
+    check_login()
     picture_id = request.form["picture_id"]
     picture = db.get_picture(picture_id)
     if not picture:
@@ -79,9 +86,6 @@ def update_picture():
 
     if picture_user_id != user_id:
         abort(403)
-
-    if not user_id:
-        return redirect("/login")
 
     file = request.files.get("picture")
     file_path = None
@@ -98,19 +102,18 @@ def update_picture():
 
 @app.route("/delete_picture/<int:picture_id>", methods=["POST"])
 def delete_picture(picture_id):
+    check_login()
     picture = db.get_picture(picture_id)
     if not picture:
         abort(404)
     user_id = session.get("user_id")
-
-    if not user_id:
-        return redirect("/login")
 
     db.delete_picture(picture_id, user_id)
     return redirect("/")
 
 @app.route("/picture/<int:picture_id>")
 def show_picture(picture_id):
+    check_login()
     picture = db.get_picture(picture_id)
     if not picture:
         abort(404)
@@ -122,6 +125,7 @@ def register():
 
 @app.route("/create", methods=["POST"])
 def create():
+    check_login()
     username = request.form["username"]
     password1 = request.form["password1"]
     password2 = request.form["password2"]
