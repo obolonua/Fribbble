@@ -6,6 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import db
 import config
+import users
+import pictures
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -27,18 +29,18 @@ def check_login():
 def index():
     q = request.args.get("q")
     if q:
-        pictures = db.search_pictures(q)
+        all_pictures = pictures.search_pictures(q)
     else:
-        pictures = db.get_pictures()
-    return render_template("index.html", pictures=pictures, search_query=q)
+        all_pictures = pictures.get_pictures()
+    return render_template("index.html", pictures=all_pictures, search_query=q)
 
 @app.route("/user/<int:user_id>")
 def user_page(user_id):
     check_login()
-    user = db.get_user(user_id)
+    user = users.get_user(user_id)
     if not user:
         abort(404)
-    publications = db.get_user_pictures(user_id)
+    publications = users.get_user_pictures(user_id)
     if not user:
         abort(404)
     return render_template("user.html", user=user, publications = publications)
@@ -68,14 +70,14 @@ def create_picture():
         file.save(file_path)
         file_path = "/" + file_path  
 
-    db.add_picture(name, description, style, user_id, file_path)
+    pictures.add_picture(name, description, style, user_id, file_path)
 
     return redirect("/")
 
 @app.route("/edit/<int:picture_id>")
 def edit_picture(picture_id):
     check_login()
-    picture = db.get_picture(picture_id)
+    picture = pictures.get_picture(picture_id)
     if not picture:
         abort(404)
     if picture["user_id"] != session["user_id"]:
@@ -86,7 +88,7 @@ def edit_picture(picture_id):
 def update_picture():
     check_login()
     picture_id = request.form["picture_id"]
-    picture = db.get_picture(picture_id)
+    picture = pictures.get_picture(picture_id)
     if not picture:
         abort(404)
     name = request.form["name"]
@@ -107,25 +109,25 @@ def update_picture():
         file.save(file_path)
         file_path = "/" + file_path  
 
-    db.update_picture(name, description, style, user_id, file_path, picture_id)
+    pictures.update_picture(name, description, style, user_id, file_path, picture_id)
     print(name, description, style, user_id, file_path, picture_id)
     return redirect("/picture/" + str(picture_id))
 
 @app.route("/delete_picture/<int:picture_id>", methods=["POST"])
 def delete_picture(picture_id):
     check_login()
-    picture = db.get_picture(picture_id)
+    picture = pictures.get_picture(picture_id)
     if not picture:
         abort(404)
     user_id = session.get("user_id")
 
-    db.delete_picture(picture_id, user_id)
+    pictures.delete_picture(picture_id, user_id)
     return redirect("/")
 
 @app.route("/picture/<int:picture_id>")
 def show_picture(picture_id):
     check_login()
-    picture = db.get_picture(picture_id)
+    picture = pictures.get_picture(picture_id)
     if not picture:
         abort(404)
     return render_template("picture.html", picture=picture)
