@@ -4,6 +4,12 @@
   <body>
     <h2>Username {{ user.username }}</h2>
     <h3>User {{ user.useername }} has {{publications | count}} publicatios </h3>
+    <h2>Pictures</h2>
+    <ul>
+      {% for publication in publications %}
+      <li><a href="/picture/{{publication.id}}">{{publication.title}}</a></li>
+      {%endfor%}
+    </ul>
     <p>
       <a href="/">Back</a>
     </p>
