@@ -33,13 +33,15 @@ def get_pictures():
     return db.query(sql)
 
 def get_picture(picture_id):
-    sql = """SELECT pictures.id,
+    sql = """SELECT users.username,
+                    pictures.id,
                     pictures.user_id,
                     pictures.title,
                     pictures.description,
                     pictures.style,
                     pictures.image_path
-            FROM pictures 
+            FROM pictures
+            JOIN users ON pictures.user_id = users.id
             WHERE pictures.id = ?"""
     result = db.query(sql, [picture_id])    
 
@@ -65,3 +67,17 @@ def search_pictures(query_text):
         ORDER BY id DESC
     """
     return query(sql, [f"%{query_text}%"])
+
+def get_user(user_id):
+    sql = """SELECT id, username
+            FROM users
+            WHERE id = ?"""
+    result = db.query(sql, [user_id]) 
+    return result[0] if result else None
+
+def get_user_pictures(user_id):
+    sql = """ SELECT id, title
+    FROM pictures
+    WHERE user_id =? ORDER BY id DESC"""
+    result = db.query(sql, [user_id])
+    return result if result else None

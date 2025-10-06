@@ -7,6 +7,10 @@
     <h2>{{ picture.title }}</h2>
     <p>{{ picture.description }}</p>
     <p><i>{{ picture.style }}</i></p>
+    <p>
+      Publisher:
+      <a href="/user/{{ picture.user_id }}">{{ picture.username }}</a>
+    </p>
     {% if picture.image_path %}
     <img src="{{ picture.image_path }}" alt="{{ picture.title }}" width="500" />
     {% endif %} {% if session.user_id == picture.user_id %}

@@ -32,6 +32,17 @@ def index():
         pictures = db.get_pictures()
     return render_template("index.html", pictures=pictures, search_query=q)
 
+@app.route("/user/<int:user_id>")
+def user_page(user_id):
+    check_login()
+    user = db.get_user(user_id)
+    if not user:
+        abort(404)
+    publications = db.get_user_pictures(user_id)
+    if not user:
+        abort(404)
+    return render_template("user.html", user=user, publications = publications)
+
 @app.route("/new_picture")
 def new_picture():
     check_login()
