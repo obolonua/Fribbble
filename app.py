@@ -54,7 +54,11 @@ def new_picture():
 def create_picture():
     check_login()
     name = request.form["name"]
+    if not name or len(name) > 50:
+        abort(403)
     description = request.form["description"]
+    if not description or len(description) > 1000:
+        abort(403)
     style = request.form["style"]
     user_id = session.get("user_id")
 
@@ -92,7 +96,11 @@ def update_picture():
     if not picture:
         abort(404)
     name = request.form["name"]
+    if not name or len(name) > 50:
+        abort(403)
     description = request.form["description"]
+    if not description or len(description) > 1000:
+        abort(403)
     style = request.form["style"]
     user_id = session.get("user_id")
     picture_user_id = int(request.form["user_id"])

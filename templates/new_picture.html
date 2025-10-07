@@ -9,7 +9,7 @@
     <form action="/create_picture" method="post" enctype="multipart/form-data">
       <p>
         <label for="name">Picture title:</label><br />
-        <input type="text" id="name" name="name" required />
+        <input type="text" id="name" name="name" required maxlength="50"/>
       </p>
       <p>
         <label for="description">Description:</label><br />
@@ -19,6 +19,7 @@
           rows="8"
           cols="50"
           required
+          maxlength="1000"
         ></textarea>
       </p>
       <p>
