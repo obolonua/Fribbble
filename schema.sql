@@ -12,3 +12,10 @@ CREATE TABLE pictures (
     user_id INTEGER REFERENCES users,
     image_path TEXT
 );
+
+CREATE TABLE picture_classes (
+    id INTEGER PRIMARY KEY,
+    picture_id INTEGER,
+    title TEXT,
+    style TEXT
+);

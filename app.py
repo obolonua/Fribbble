@@ -53,13 +53,18 @@ def new_picture():
 @app.route("/create_picture", methods=["POST"])
 def create_picture():
     check_login()
+    classes = []
     name = request.form["name"]
     if not name or len(name) > 50:
         abort(403)
     description = request.form["description"]
     if not description or len(description) > 1000:
         abort(403)
+
     style = request.form["style"]
+    if style:
+        classes.append(("Style", style))
+
     user_id = session.get("user_id")
 
     if not user_id:
@@ -74,7 +79,7 @@ def create_picture():
         file.save(file_path)
         file_path = "/" + file_path  
 
-    pictures.add_picture(name, description, style, user_id, file_path)
+    pictures.add_picture(name, description, style, classes, user_id, file_path)
 
     return redirect("/")
 
@@ -118,7 +123,6 @@ def update_picture():
         file_path = "/" + file_path  
 
     pictures.update_picture(name, description, style, user_id, file_path, picture_id)
-    print(name, description, style, user_id, file_path, picture_id)
     return redirect("/picture/" + str(picture_id))
 
 @app.route("/delete_picture/<int:picture_id>", methods=["POST"])
@@ -138,7 +142,10 @@ def show_picture(picture_id):
     picture = pictures.get_picture(picture_id)
     if not picture:
         abort(404)
-    return render_template("picture.html", picture=picture)
+    picture_specs = pictures.get_specs(picture_id)
+    for spec in picture_specs:
+        print(spec)
+    return render_template("picture.html", picture=picture, picture_specs=picture_specs)
 
 @app.route("/register")
 def register():

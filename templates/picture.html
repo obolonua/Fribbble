@@ -11,14 +11,19 @@
       Publisher:
       <a href="/user/{{ picture.user_id }}">{{ picture.username }}</a>
     </p>
+    <p>
+      Specs:
+      <ul>
+      {% for spec in picture_specs%}
+      <li>{{spec.title}}: {{spec.style}}</li>
+      {% endfor %}
+      </ul>
+    </p>
     {% if picture.image_path %}
     <img src="{{ picture.image_path }}" alt="{{ picture.title }}" width="500" />
     {% endif %} {% if session.user_id == picture.user_id %}
     <p><a href="/edit/{{picture.id}}">Muokkaa</a></p>
-    <form
-      action="/delete_picture/{{ picture.id }}"
-      method="post"
-    >
+    <form action="/delete_picture/{{ picture.id }}" method="post">
       <button type="submit">Delete Picture</button>
     </form>
     {% endif %}

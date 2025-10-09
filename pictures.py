@@ -1,13 +1,23 @@
 import db
 
-def add_picture(name, description, style, user_id, file_path):
+def add_picture(name, description, style, classes, user_id, file_path):
     sql = "INSERT INTO pictures (title, description, style, user_id, image_path) VALUES (?, ?, ?, ?, ?)"
     db.execute(sql, [name, description, style, user_id, file_path])
+
+    picture_id = db.last_insert_id()
+
+    for title, value in classes:
+        sql = "INSERT INTO picture_classes (picture_id, title, style) VALUES (?, ?, ?)"
+        db.execute(sql, [picture_id, title, value])
 
 def get_pictures():
     sql = "SELECT id, title, description, style, image_path FROM pictures ORDER BY id DESC"
     return db.query(sql)
 
+def get_specs(picture_id):
+    sql =  """SELECT title, style FROM picture_classes WHERE picture_id =?"""
+    return db.query(sql, [picture_id])
+     
 def get_picture(picture_id):
     sql = """SELECT users.username,
                     pictures.id,
