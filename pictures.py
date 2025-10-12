@@ -42,6 +42,8 @@ def update_picture(title, description, style, user_id, file_path, picture_id):
         db.execute(sql, [title, description, style, file_path, picture_id, user_id])
 
 def delete_picture(picture_id, user_id):
+    sql2 = "DELETE FROM picture_classes WHERE picture_id = ?"
+    db.execute(sql2, [picture_id])
     sql = "DELETE FROM pictures WHERE id = ? AND user_id = ?"
     db.execute(sql, [picture_id, user_id])
 
