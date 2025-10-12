@@ -43,32 +43,37 @@ def user_page(user_id):
     publications = users.get_user_pictures(user_id)
     if not user:
         abort(404)
-    return render_template("user.html", user=user, publications = publications)
+    return render_template("user.html", user=user, publications=publications)
 
 @app.route("/new_picture")
 def new_picture():
     check_login()
-    return render_template("new_picture.html")
+    classes = pictures.get_all_classes()
+    return render_template("new_picture.html", classes=classes)
 
 @app.route("/create_picture", methods=["POST"])
 def create_picture():
     check_login()
-    classes = []
+
     name = request.form["name"]
     if not name or len(name) > 50:
         abort(403)
+
     description = request.form["description"]
     if not description or len(description) > 1000:
         abort(403)
 
-    style = request.form["style"]
-    if style:
-        classes.append(("Style", style))
-
     user_id = session.get("user_id")
 
-    if not user_id:
-        return redirect("/login")
+    style = request.form["style"]
+
+    classes = []
+    for item in request.form.getlist("style"):
+        if item:
+            parts = item.split(":")
+            classes.append((parts[0], parts[1]))
+
+    print(classes)
 
     file = request.files.get("picture")
     file_path = None

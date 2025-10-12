@@ -22,15 +22,23 @@
           maxlength="1000"
         ></textarea>
       </p>
-      <p>
-        <label for="style">Style:</label><br />
-        <select name="style">
-          <option value="Realism">Realism</option>
-          <option value="Abstract">Abstract</option>
-          <option value="Stylized">Stylized</option>
-          <option value="Conseptual">Conseptual</option>
-        </select>
-      </p>
+
+
+
+  {% for class in classes %}
+    <p>
+    <label for="class{{ class }}">{{ class }}</label>: <br />
+    <select name="style" id="class{{ class }}">
+      <option value="">(valitse)</option>
+    {% for option in classes[class] %}
+      <option value="{{ class }}:{{ option }}">{{ option }}</option>
+    {% endfor %}
+    </select>
+  </p>
+  {% endfor %}
+
+
+
       <p>
         <label for="picture">Upload picture:</label><br />
         <input

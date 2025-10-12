@@ -19,3 +19,9 @@ CREATE TABLE picture_classes (
     title TEXT,
     style TEXT
 );
+
+CREATE TABLE classes (
+    id INTEGER PRIMARY KEY,
+    title TEXT,
+    value TEXT
+)
