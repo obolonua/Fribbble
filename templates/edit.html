@@ -12,7 +12,14 @@
     <form action="/update_picture" method="post" enctype="multipart/form-data">
       <p>
         <label for="name">Picture title:</label><br />
-        <input type="text" id="name" name="name" value="{{picture.title}}"required maxlength="50"/>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          value="{{picture.title}}"
+          required
+          maxlength="50"
+        />
       </p>
       <p>
         <label for="description">Description:</label><br />
@@ -23,12 +30,25 @@
           cols="50"
           required
           maxlength="1000"
-        >{{picture.description}}</textarea>
+        >
+{{picture.description}}</textarea
+        >
       </p>
-      <p>
-        <label for="style">Style:</label><br />
-        <input type="text" id="style" name="style" value="{{picture.style}}" required />
-      </p>
+
+      {% for class in all_classes %}
+        <p>
+          <label for="class{{ class }}">{{ class }}</a>: <br />
+            <select name="style">
+              {% for option in all_classes[class] %}
+                {% if classes[class] == option %}
+                <option value="{{ class }}:{{ option }}" selected>{{ option }}</option>
+                {% else %}
+                <option value="{{ class }}:{{ option }}">{{ option }}</option>
+                {% endif %}
+                {% endfor %}
+            </select> 
+        </p>
+        {% endfor %}
       <p>
         <label for="picture">Upload picture:</label><br />
         <input
@@ -40,9 +60,9 @@
           required
         />
       </p>
-      <input type="hidden" name="picture_id" value="{{picture.id}}"/>
-      <input type="hidden" name="user_id" value = {{picture.user_id}}>
+      <input type="hidden" name="picture_id" value="{{picture.id}}" />
+      <input type="hidden" name="user_id" value="{{picture.user_id}}" />
       <input type="submit" value="Update " />
     </form>
   </body>
-</html
+</html>

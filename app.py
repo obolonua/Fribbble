@@ -65,15 +65,13 @@ def create_picture():
 
     user_id = session.get("user_id")
 
-    style = request.form["style"]
+    style = request.form["style"].split(":")[1]
 
     classes = []
     for item in request.form.getlist("style"):
         if item:
             parts = item.split(":")
             classes.append((parts[0], parts[1]))
-
-    print(classes)
 
     file = request.files.get("picture")
     file_path = None
@@ -96,7 +94,15 @@ def edit_picture(picture_id):
         abort(404)
     if picture["user_id"] != session["user_id"]:
         abort(403)
-    return render_template("edit.html", picture = picture)
+
+    all_classes = pictures.get_all_classes()
+    classes = {}
+    for my_class in all_classes:
+        classes[my_class] = "" 
+    for entry in pictures.get_specs(picture_id):
+        classes[entry["title"]] = entry["style"]
+
+    return render_template("edit.html", picture = picture, classes = classes, all_classes = all_classes)
 
 @app.route("/update_picture", methods=["POST"])
 def update_picture():
@@ -118,6 +124,12 @@ def update_picture():
     if picture_user_id != user_id:
         abort(403)
 
+    classes = []
+    for item in request.form.getlist("style"):
+        if item:
+            parts = item.split(":")
+            classes.append((parts[0], parts[1]))
+
     file = request.files.get("picture")
     file_path = None
 
@@ -127,7 +139,7 @@ def update_picture():
         file.save(file_path)
         file_path = "/" + file_path  
 
-    pictures.update_picture(name, description, style, user_id, file_path, picture_id)
+    pictures.update_picture(name, description, style, user_id, file_path, picture_id, classes)
     return redirect("/picture/" + str(picture_id))
 
 @app.route("/delete_picture/<int:picture_id>", methods=["POST"])
@@ -148,8 +160,6 @@ def show_picture(picture_id):
     if not picture:
         abort(404)
     picture_specs = pictures.get_specs(picture_id)
-    for spec in picture_specs:
-        print(spec)
     return render_template("picture.html", picture=picture, picture_specs=picture_specs)
 
 @app.route("/register")

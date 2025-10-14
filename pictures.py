@@ -33,13 +33,21 @@ def get_picture(picture_id):
 
     return result[0] if result else None
 
-def update_picture(title, description, style, user_id, file_path, picture_id):
-        sql = """
-            UPDATE pictures
-            SET title = ?, description = ?, style = ?, image_path = ?
-            WHERE id = ? AND user_id = ?
+def update_picture(title, description, style, user_id, file_path, picture_id, classes):
+    
+    sql = "DELETE FROM picture_classes WHERE picture_id =?"
+    db.execute(sql, [picture_id])
+
+    for title, value in classes:
+        sql = "INSERT INTO picture_classes (picture_id, title, style) VALUES (?, ?, ?)"
+        db.execute(sql, [picture_id, title, value])        
+
+    sql = """
+        UPDATE pictures
+        SET title = ?, description = ?, style = ?, image_path = ?
+        WHERE id = ? AND user_id = ?
         """
-        db.execute(sql, [title, description, style, file_path, picture_id, user_id])
+    db.execute(sql, [title, description, style, file_path, picture_id, user_id])
 
 def delete_picture(picture_id, user_id):
     sql2 = "DELETE FROM picture_classes WHERE picture_id = ?"
