@@ -176,7 +176,6 @@ def register():
 
 @app.route("/create", methods=["POST"])
 def create():
-    check_login()
     username = request.form["username"]
     password1 = request.form["password1"]
     password2 = request.form["password2"]
@@ -190,7 +189,7 @@ def create():
     except sqlite3.IntegrityError:
         return "VIRHE: tunnus on jo varattu"
 
-    return "Tunnus luotu"
+    redirect("/")
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
