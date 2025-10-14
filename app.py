@@ -54,7 +54,7 @@ def new_picture():
 @app.route("/create_picture", methods=["POST"])
 def create_picture():
     check_login()
-
+    allowed_specs = pictures.get_all_classes()
     name = request.form["name"]
     if not name or len(name) > 50:
         abort(403)
@@ -65,13 +65,18 @@ def create_picture():
 
     user_id = session.get("user_id")
 
-    style = request.form["style"].split(":")[1]
+    style = request.form["style"]
+    print(style)
 
+    style = request.form["style"].split(":")[1]
     classes = []
     for item in request.form.getlist("style"):
         if item:
-            parts = item.split(":")
-            classes.append((parts[0], parts[1]))
+            title, value = item.split(":")
+            if title not in allowed_specs or value not in allowed_specs[title]:
+                abort(403)
+
+            classes.append((title, value))
 
     file = request.files.get("picture")
     file_path = None
@@ -107,6 +112,7 @@ def edit_picture(picture_id):
 @app.route("/update_picture", methods=["POST"])
 def update_picture():
     check_login()
+    allowed_specs = pictures.get_all_classes
     picture_id = request.form["picture_id"]
     picture = pictures.get_picture(picture_id)
     if not picture:
@@ -127,8 +133,10 @@ def update_picture():
     classes = []
     for item in request.form.getlist("style"):
         if item:
-            parts = item.split(":")
-            classes.append((parts[0], parts[1]))
+            title, value = item.split(":")
+            if title not in allowed_specs or value not in allowed_specs[title]:
+                abort(403)
+            classes.append((title, value))
 
     file = request.files.get("picture")
     file_path = None

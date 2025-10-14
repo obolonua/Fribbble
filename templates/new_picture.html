@@ -29,7 +29,6 @@
     <p>
     <label for="class{{ class }}">{{ class }}</label>: <br />
     <select name="style" id="class{{ class }}">
-      <option value="">(valitse)</option>
     {% for option in classes[class] %}
       <option value="{{ class }}:{{ option }}">{{ option }}</option>
     {% endfor %}
