@@ -168,7 +168,9 @@ def show_picture(picture_id):
     if not picture:
         abort(404)
     picture_specs = pictures.get_specs(picture_id)
-    return render_template("picture.html", picture=picture, picture_specs=picture_specs)
+    messages = pictures.get_messages(picture_id)
+    print(messages)
+    return render_template("picture.html", picture=picture, picture_specs=picture_specs, messages=messages)
 
 @app.route("/register")
 def register():
@@ -189,7 +191,23 @@ def create():
     except sqlite3.IntegrityError:
         return "VIRHE: tunnus on jo varattu"
 
-    redirect("/")
+    return redirect("/")
+
+@app.route("/create_message/<int:picture_id>", methods=["POST"])
+def create_message(picture_id):
+    check_login()
+    picture = pictures.get_picture(picture_id)
+    if not picture:
+        abort(403)
+
+    user_id = session.get("user_id")
+    picture_id = request.form["picture_id"]
+
+    message = request.form["message"]
+
+    pictures.add_message(picture_id, user_id, message)
+
+    return redirect("/picture/" + str(picture_id))
 
 @app.route("/login", methods=["POST", "GET"])
 def login():

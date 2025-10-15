@@ -10,6 +10,18 @@ def add_picture(name, description, style, classes, user_id, file_path):
         sql = "INSERT INTO picture_classes (picture_id, title, style) VALUES (?, ?, ?)"
         db.execute(sql, [picture_id, title, value])
 
+def add_message(picture_id, user_id, message):
+    sql = "INSERT INTO messages (picture_id, user_id, message) VALUES (?, ?, ?)"
+    print(picture_id, user_id, message)
+    db.execute(sql, [picture_id, user_id, message])
+
+def get_messages(picture_id):
+    sql = """SELECT messages.message, users.id user_id, users.username
+        FROM messages, users
+        WHERE messages.picture_id = ? AND messages.user_id = users.id
+        ORDER BY messages.id DESC"""
+    return db.query(sql, [picture_id])
+
 def get_pictures():
     sql = "SELECT id, title, description, style, image_path FROM pictures ORDER BY id DESC"
     return db.query(sql)

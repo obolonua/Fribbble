@@ -12,4 +12,4 @@ def get_user_pictures(user_id):
     FROM pictures
     WHERE user_id =? ORDER BY id DESC"""
     result = db.query(sql, [user_id])
-    return result if result else None
+    return result

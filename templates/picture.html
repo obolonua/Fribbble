@@ -26,7 +26,18 @@
       <button type="submit">Delete Picture</button>
     </form>
     {% endif %}
-
+    <h2>Messages</h2>
+      <ul>
+        {% for message in messages %}
+          <li>{{ message.message }}, <a href="/user/{{ message.user_id }}">{{ message.username }}</a></li>
+        {% endfor %}
+      </ul>
+    <h3>New message</h3>
+    <form action="/create_message/{{picture.id}}" method="post">
+      <input type="text" name="message" value=""/>
+      <input type="hidden" name="picture_id" value="{{picture.id}}"/>
+      <input type="submit" value="Submit"/>
+    </form>
     <p><a href="/">Back to gallery</a></p>
   </body>
 </html>
