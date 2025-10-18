@@ -1,4 +1,5 @@
 import os
+import secrets
 import sqlite3
 from flask import Flask
 from flask import redirect, render_template, request, session, abort
@@ -23,6 +24,10 @@ def allowed_file(filename):
 
 def check_login():
     if "user_id" not in session:
+        abort(403)
+
+def check_csrf():
+    if "csrf_token" not in request.form:
         abort(403)
 
 @app.route("/")
@@ -54,6 +59,7 @@ def new_picture():
 @app.route("/create_picture", methods=["POST"])
 def create_picture():
     check_login()
+    check_csrf()
     allowed_specs = pictures.get_all_classes()
     name = request.form["name"]
     if not name or len(name) > 50:
@@ -112,7 +118,8 @@ def edit_picture(picture_id):
 @app.route("/update_picture", methods=["POST"])
 def update_picture():
     check_login()
-    allowed_specs = pictures.get_all_classes
+    check_csrf()
+    allowed_specs = pictures.get_all_classes()
     picture_id = request.form["picture_id"]
     picture = pictures.get_picture(picture_id)
     if not picture:
@@ -134,6 +141,7 @@ def update_picture():
     for item in request.form.getlist("style"):
         if item:
             title, value = item.split(":")
+            print(title, value)
             if title not in allowed_specs or value not in allowed_specs[title]:
                 abort(403)
             classes.append((title, value))
@@ -153,6 +161,7 @@ def update_picture():
 @app.route("/delete_picture/<int:picture_id>", methods=["POST"])
 def delete_picture(picture_id):
     check_login()
+    check_csrf()
     picture = pictures.get_picture(picture_id)
     if not picture:
         abort(404)
@@ -196,6 +205,7 @@ def create():
 @app.route("/create_message/<int:picture_id>", methods=["POST"])
 def create_message(picture_id):
     check_login()
+    check_csrf()
     picture = pictures.get_picture(picture_id)
     if not picture:
         abort(403)
@@ -232,6 +242,7 @@ def login():
         if check_password_hash(password_hash, password):
             session["user_id"] = user_id
             session["username"] = username
+            session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
         else:
             return "VIRHE: väärä tunnus tai salasana"

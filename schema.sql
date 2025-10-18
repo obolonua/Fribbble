@@ -9,13 +9,13 @@ CREATE TABLE pictures (
     title TEXT,
     description TEXT,
     style TEXT,
-    user_id INTEGER REFERENCES users(id),
+    user_id INTEGER REFERENCES users,
     image_path TEXT
 );
 
 CREATE TABLE picture_classes (
     id INTEGER PRIMARY KEY,
-    picture_id INTEGER REFERENCES pictures(id),
+    picture_id INTEGER REFERENCES pictures,
     title TEXT,
     style TEXT
 );
@@ -28,7 +28,7 @@ CREATE TABLE classes (
 
 CREATE TABLE messages (
     id INTEGER PRIMARY KEY,
-    picture_id INTEGER REFERENCES pictures(id),
-    user_id INTEGER REFERENCES users(id),
+    picture_id INTEGER REFERENCES pictures,
+    user_id INTEGER REFERENCES users,
     message TEXT
 )
