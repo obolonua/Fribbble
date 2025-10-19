@@ -23,6 +23,7 @@ Fribbble on Flask-sovellus, jonka avulla käyttäjät voivat jakaa kuviaan, sela
 2. **Luo tietokanta**
 
     sqlite3 database.db < schema.sql
+    
     sqlite3 database.db < init.sql
 
 3. **Luo config.py**
