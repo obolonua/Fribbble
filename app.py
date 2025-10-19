@@ -1,7 +1,7 @@
 import os
 import secrets
 import sqlite3
-from flask import Flask
+from flask import Flask, flash
 from flask import redirect, render_template, request, session, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -66,7 +66,8 @@ def create_picture():
         abort(403)
 
     description = request.form["description"]
-    if not description or len(description) > 1000:
+    print(len(description))
+    if not description or len(description) > 100:
         abort(403)
 
     user_id = session.get("user_id")
@@ -92,7 +93,7 @@ def create_picture():
         file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
         file.save(file_path)
         file_path = "/" + file_path  
-
+    print(name, description, style, classes, user_id, file_path)
     pictures.add_picture(name, description, style, classes, user_id, file_path)
 
     return redirect("/")
@@ -130,7 +131,7 @@ def update_picture():
     description = request.form["description"]
     if not description or len(description) > 1000:
         abort(403)
-    style = request.form["style"]
+    style = request.form["style"].split(":")[1]
     user_id = session.get("user_id")
     picture_user_id = int(request.form["user_id"])
 
@@ -154,7 +155,7 @@ def update_picture():
         file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
         file.save(file_path)
         file_path = "/" + file_path  
-
+    print(name, description, style, user_id, file_path, picture_id, classes)
     pictures.update_picture(name, description, style, user_id, file_path, picture_id, classes)
     return redirect("/picture/" + str(picture_id))
 
@@ -191,16 +192,19 @@ def create():
     password1 = request.form["password1"]
     password2 = request.form["password2"]
     if password1 != password2:
-        return "VIRHE: salasanat eivät ole samat"
+        flash("Passwords are not the same")
+        return redirect("/register")
+    
     password_hash = generate_password_hash(password1)
 
     try:
         sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
         db.execute(sql, [username, password_hash])
     except sqlite3.IntegrityError:
-        return "VIRHE: tunnus on jo varattu"
-
-    return redirect("/")
+        flash("Username alreaty in use")
+        return redirect("/register")
+    flash("You can now login")
+    return redirect("/register")
 
 @app.route("/create_message/<int:picture_id>", methods=["POST"])
 def create_message(picture_id):
@@ -214,6 +218,8 @@ def create_message(picture_id):
     picture_id = request.form["picture_id"]
 
     message = request.form["message"]
+    if len(message) > 800:
+        abort(403)
 
     pictures.add_message(picture_id, user_id, message)
 
@@ -232,7 +238,8 @@ def login():
         results = db.query(sql, [username])
 
         if not results:
-            return "VIRHE: väärä tunnus tai salasana"
+            flash(" Wrong username of password")
+            redirect("/login")
         
         result = results[0]
         
@@ -245,7 +252,8 @@ def login():
             session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
         else:
-            return "VIRHE: väärä tunnus tai salasana"
+            flash(" Wrong username of password")
+            redirect("/login")
 
 @app.route("/logout")
 def logout():

@@ -1,48 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="fi">
   <head>
+    <meta charset="UTF-8" />
     <title>Fribbble</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='index.css') }}"
+    />
   </head>
 
   <body>
     {% if session.username %}
-    <form method="get" action="/">
-      <input
-        type="text"
-        name="q"
-        placeholder="Search by title"
-        value="{{ search_query or '' }}"
-      />
-      <input type="submit" value="Search" />
-    </form>
-    <p>
-      <a href="/new_picture">New picture</a>
-    </p>
-    <p>
-      <a href="/logout">Kirjaudu ulos</a>
-    </p>
+
+    <header class="topbar">
+      <form method="get" action="/" class="search-form">
+        <input
+          type="text"
+          name="q"
+          placeholder="Search by title"
+          value="{{ search_query or '' }}"
+        />
+        <button type="submit">Search</button>
+      </form>
+      <nav class="topbar-links">
+        <a href="/new_picture" class="topbar-button">New Picture</a>
+        <a href="/logout" class="topbar-button">Sign Out</a>
+      </nav>
+    </header>
 
     <h2>Pictures</h2>
-    {% if pictures %} {% for pic in pictures %}
-    <div style="margin-bottom: 30px">
-      <h3>{{ pic.title }}</h3>
-      <p>{{ pic.description }}</p>
-      <p><i>{{ pic.style }}</i></p>
-      {% if pic.image_path %}
-      <a href="/picture/{{ pic.id }}">
-        <img src="{{ pic.image_path }}" alt="{{ pic.title }}" width="300" />
+
+    {% if pictures %}
+    <div class="card-grid">
+      {% for pic in pictures %}
+      <a class="picture-card" href="/picture/{{ pic.id }}">
+        {% if pic.image_path %}
+        <img
+          src="{{ pic.image_path }}"
+          alt="{{ pic.title }}"
+          class="card-image"
+        />
+        {% endif %}
+        <div class="card-content">
+          <h3>{{ pic.title }}</h3>
+          <p class="style">{{ pic.style }}</p>
+        </div>
       </a>
-      {% endif %}
+      {% endfor %}
     </div>
-    {% endfor %} {% else %}
-    <p>No pictures yet. <a href="/new_picture">Add one</a></p>
+    {% else %}
+    <!-- <p>No pictures yet. <a href="/new_picture">Add one</a></p> -->
+
+    <p class="no-pictures-message">
+    No pictures yet. <a href="/new_picture">Add one</a> to get started!
+    </p>
     {% endif %} {% else %}
-    <p>
-      <a href="/login">Kirjaudu sisään</a>
-    </p>
-    <p>
-      <a href="/register">Luo tunnus</a>
-    </p>
+    <!-- <p><a href="/login">Kirjaudu sisään</a></p>
+    <p><a href="/register">Luo tunnus</a></p> -->
+    <div class="auth-links">
+    <a href="/login" class="auth-button">Kirjaudu sisään</a>
+    <a href="/register" class="auth-button register">Luo tunnus</a>
+    </div>
     {% endif %}
   </body>
 </html>

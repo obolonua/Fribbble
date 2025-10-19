@@ -2,25 +2,34 @@
 <html>
 
 <head>
-  <title>Rekisteröinti</title>
+  <title>Register</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='register.css') }}">
 </head>
 
 <body>
   <form action="/create" method="post">
+    {% for message in get_flashed_messages() %}
     <p>
-      Tunnus: <br />
+      <b>{{ message }}</b>
+    </p>
+    {% endfor %}
+    <p>
+      Username <br />
       <input type="text" name="username" />
     </p>
     <p>
-      Salasana: <br />
+      Password <br />
       <input type="password" name="password1" />
     </p>
     <p>
-      Salasana uudestaan: <br />
+      Repeat password <br />
       <input type="password" name="password2" />
     </p>
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <input type="submit" value="Luo tunnus" />
+    <p style="text-align: center; margin-top: 15px;">
+      Already have an account? <a href="/login">Log in</a>
+    </p>
   </form>
 </body>
 

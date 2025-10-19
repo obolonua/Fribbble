@@ -45,7 +45,7 @@ def get_picture(picture_id):
 
     return result[0] if result else None
 
-def update_picture(title, description, style, user_id, file_path, picture_id, classes):
+def update_picture(name, description, style, user_id, file_path, picture_id, classes):
     
     sql = "DELETE FROM picture_classes WHERE picture_id =?"
     db.execute(sql, [picture_id])
@@ -59,7 +59,7 @@ def update_picture(title, description, style, user_id, file_path, picture_id, cl
         SET title = ?, description = ?, style = ?, image_path = ?
         WHERE id = ? AND user_id = ?
         """
-    db.execute(sql, [title, description, style, file_path, picture_id, user_id])
+    db.execute(sql, [name, description, style, file_path, picture_id, user_id])
 
 def delete_picture(picture_id, user_id):
     print(picture_id, user_id)

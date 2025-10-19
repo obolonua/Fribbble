@@ -2,44 +2,62 @@
 <html>
   <head>
     <title>{{ picture.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='picture.css') }}">
   </head>
   <body>
-    <h2>{{ picture.title }}</h2>
-    <p>{{ picture.description }}</p>
-    <p>
-      Publisher:
-      <a href="/user/{{ picture.user_id }}">{{ picture.username }}</a>
-    </p>
-    <p>
-      Specs:
-      <ul>
-      {% for spec in picture_specs%}
-      <li>{{spec.title}}: {{spec.style}}</li>
-      {% endfor %}
-      </ul>
-    </p>
-    {% if picture.image_path %}
-    <img src="{{ picture.image_path }}" alt="{{ picture.title }}" width="500" />
-    {% endif %} {% if session.user_id == picture.user_id %}
-    <p><a href="/edit/{{picture.id}}">Update picture</a></p>
-    <form action="/delete_picture/{{ picture.id }}" method="post">
-      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-      <button type="submit">Delete Picture</button>
-    </form>
-    {% endif %}
-    <h2>Messages</h2>
-      <ul>
+    <div class="form-container">
+      <h1>{{ picture.title }}</h1>
+
+      {% if picture.image_path %}
+      <img src="{{ picture.image_path }}" alt="{{ picture.title }}" class="preview-image" />
+      {% endif %}
+
+      <p class="description"><strong>Description:</strong> {{ picture.description }}</p>
+      
+      <p>
+        <strong>Publisher:</strong>
+        <a href="/user/{{ picture.user_id }}">{{ picture.username }}</a>
+      </p>
+
+      <div class="specs">
+        <strong>Specs:</strong>
+        <ul>
+          {% for spec in picture_specs %}
+            <li>{{ spec.title }}: {{ spec.style }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      {% if session.user_id == picture.user_id %}
+      <div class="owner-controls">
+        <p><a href="/edit/{{ picture.id }}" class="button-link">Update picture</a></p>
+        <form action="/delete_picture/{{ picture.id }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+          <button type="submit" class="danger-button">Delete Picture</button>
+        </form>
+      </div>
+      {% endif %}
+
+      <h2>Messages</h2>
+      <ul class="messages-list">
         {% for message in messages %}
-          <li>{{ message.message }}, <a href="/user/{{ message.user_id }}">{{ message.username }}</a></li>
+          <li class="message-item">
+            {{ message.message }},
+            <a href="/user/{{ message.user_id }}">{{ message.username }}</a>
+          </li>
         {% endfor %}
       </ul>
-    <h3>New message</h3>
-    <form action="/create_message/{{picture.id}}" method="post">
-      <input type="text" name="message" value=""/>
-      <input type="hidden" name="picture_id" value="{{picture.id}}"/>
-      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-      <input type="submit" value="Submit"/>
-    </form>
-    <p><a href="/">Back to gallery</a></p>
+
+      <h3>New message</h3>
+      <form action="/create_message/{{ picture.id }}" method="post" class="message-form">
+        <input type="text" name="message" placeholder="Write a message..." required />
+        <input type="hidden" name="picture_id" value="{{ picture.id }}" />
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+        <input type="submit" value="Submit" />
+      </form>
+
+      <p><a href="/" class="back-link">← Back to gallery</a></p>
+    </div>
   </body>
 </html>
+
